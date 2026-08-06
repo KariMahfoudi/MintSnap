@@ -1,0 +1,7 @@
+{
+"uuid": "mintsnap@r3adk",
+"name": "MintSnap",
+"description": "Windows 11 snap layout for linux mint cinnamon",
+"version": "0.1.0",
+"cinnamon-version":["6.6"]
+}
