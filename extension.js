@@ -1,12 +1,14 @@
 const Main = imports.ui.main;
-class MintSnapExtension{
+
+class MintSnapExtension {
     constructor() {
         this.enabled = false;
     }
-    enable(){
+
+    enable() {
         this.enabled = true;
 
-        global.log("[MinsSnap] enabled");
+        global.log("[MintSnap] enabled");
 
         Main.notify(
             "MintSnap",
@@ -14,21 +16,25 @@ class MintSnapExtension{
         );
     }
 
-    disable(){
-        this.enabled =false;
-        global.log("[MinsSnap] disabled");
+    disable() {
+        this.enabled = false;
+        global.log("[MintSnap] disabled");
     }
 }
 
 let extension = null;
 
-function enable(){
+function init() {
+}
+
+function enable() {
     extension = new MintSnapExtension();
     extension.enable();
 }
-function disable(){
-   if (extension !== null){
-       extension.disable();
-       extension = null;
-}
+
+function disable() {
+    if (extension !== null) {
+        extension.disable();
+        extension = null;
+    }
 }
