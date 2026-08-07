@@ -14,6 +14,24 @@ class MintSnapExtension {
             "MintSnap",
             "Extension successfully loaded"
         );
+    
+        let window = global.display.focus_window;
+    
+        if (window){
+            global.log("[MintSnap] Active window:" + window.get_title());
+
+            Main.notify(
+                "MintSnap",
+                "Active window: " + window.get_title()
+            );
+
+        }
+    else {
+        Main.notify(
+            "MintSnap",
+            "No active window"
+        );
+    }    
     }
 
     disable() {
