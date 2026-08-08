@@ -5,14 +5,23 @@ class MintSnapExtension {
     constructor() {
         this.enabled = false;
         this.settings = null;
-        this.focusSignal= null;
+        this.focusSignal = null;
+        this.notifyFocusChanges = true;
     }
 
     enable() {
         this.enabled = true;
 
-        this.settings = new Settings.ExtensionSettings(this, "mintsnap@krim");
-        this.settings.bind("Notify focus changes", "notifyFocusChanges", this._onNotifyFocusChangesChanged.bind(this));
+        this.settings = new Settings.ExtensionSettings(
+            this,
+            "mintsnap@krim"
+        );
+
+        this.settings.bind(
+            "notify-focus-change",
+            "notifyFocusChanges"
+        );
+
         global.log("[MintSnap] enabled");
 
         Main.notify(
@@ -20,38 +29,42 @@ class MintSnapExtension {
             "Extension successfully loaded"
         );
 
-        this.focusSignal = global.display.connect('notify::focus-window', ()=>{this.onFocusChanged});
+        this.focusSignal = global.display.connect(
+            "notify::focus-window",
+            () => {
+                this.onFocusChanged();
+            }
+        );
     }
 
-    onFocusChanged(){
+    onFocusChanged() {
         let window = global.display.focus_window;
-        if(!window){
+
+        if (!window) {
             return;
         }
 
         let title = window.get_title();
-        global.log("[MintSnap] Focus changed to: " + title);
-        if (this.notifyFocusChange){
+
+        global.log(
+            "[MintSnap] Focus changed to: " + title
+        );
+
+        if (this.notifyFocusChanges) {
             Main.notify(
                 "MintSnap",
-                "Active window:" +title);
+                "Active window: " + title
+            );
         }
-
     }
-
-    
-    
-        l
 
     disable() {
         this.enabled = false;
- 
-        if (this.focusSignal !== null){
+
+        if (this.focusSignal !== null) {
             global.display.disconnect(this.focusSignal);
             this.focusSignal = null;
         }
-
-
 
         global.log("[MintSnap] disabled");
     }

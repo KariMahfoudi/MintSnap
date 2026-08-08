@@ -1,5 +1,5 @@
 {
-   "Noitfy focus changes" : {
+   "notify-focus-change" : {
 
     "type": "switch",
     "default" : true,
