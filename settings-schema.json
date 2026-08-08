@@ -1,0 +1,10 @@
+{
+   "Noitfy focus changes" : {
+
+    "type": "switch",
+    "default" : true,
+    "description": "Notify when the focus changes to another window.",
+    "tooltip" : "Display a notification whenever you switch to another window."
+
+   }
+}
