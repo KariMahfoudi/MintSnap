@@ -1,11 +1,11 @@
-// utility functions for windows
+
 
 const Main = imports.ui.main;
 const Panel = imports.ui.panel;
 
-// get the screen area excluding the panels
+
 function getUsableScreenArea(displayIdx) {
-    // If we received a display index number, get the geometry
+  
     if (typeof displayIdx !== 'number') {
         global.logError('getUsableScreenArea: displayIdx is not a number');
         return null;
@@ -18,7 +18,7 @@ function getUsableScreenArea(displayIdx) {
     let left = display.x;
     let right = display.x + display.width;
 
-    // Get panels for this display
+
     for (let panel of Main.panelManager.getPanelsInMonitor(displayIdx)) {
         if (!panel.isHideable()) {
             switch (panel.panelPosition) {
@@ -43,7 +43,7 @@ function getUsableScreenArea(displayIdx) {
     return { x: left, y: top, width: width, height: height };
 }
 
-// Snap window to a node in the layout
+
 function snapToRect(metaWindow, rect) {
     if (!metaWindow || !rect) {
         global.logError('No metaWindow or rect');
@@ -51,7 +51,7 @@ function snapToRect(metaWindow, rect) {
     }
 
     let clientRect = metaWindow.get_frame_rect();
-    // Check if window is already at desired position and size
+    
     if (clientRect.x === rect.x &&
         clientRect.y === rect.y &&
         clientRect.width === rect.width &&
@@ -65,7 +65,7 @@ function snapToRect(metaWindow, rect) {
         rect.width, rect.height);
 }
 
-// Export the module
+
 module.exports = {
     getUsableScreenArea,
     snapToRect

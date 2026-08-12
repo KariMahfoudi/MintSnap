@@ -11,7 +11,7 @@ const { GridEditor } = require('./grid-editor');
 const { LayoutIO } = require('./io-utils');
 const { LayoutNode } = require('./node_tree');
 
-// a hardcoded layout for 2x2 layout as default
+
 const LayoutOf2x2 = new LayoutNode(0, [
     new LayoutNode(0.5, [
         new LayoutNode(-0.5), new LayoutNode(0)
@@ -61,7 +61,7 @@ function getFocusedDisplay() {
         return;
     }
 
-    // Get the display index instead of monitor
+
     return focusWindow.get_monitor();
 }
 
@@ -80,21 +80,19 @@ function mapModifierSettingToModifierType(modifierSetting) {
     }
 }
 
-// The application class is only constructed once and is the main entry
-// of the extension.
+
 class Application {
-    // the active grid editor
+    
     #gridEditor = null;
 
-    // the active drag session, if any (null between drags)
+
     #dragSession = null;
 
     #layoutIO;
 
-    // the layout trees for each display
     #layouts = {};
 
-    // the layout trees for each preset
+
     #presets = null;
 
     #signals = new SignalManager.SignalManager(null);
@@ -158,7 +156,6 @@ class Application {
             };
         }
 
-        // add the snap style class to get the highlighted colors
         stylingActor.add_style_class_name('snap');
 
         let highlightColor = stylingActor.get_theme_node().get_background_color();
@@ -189,7 +186,7 @@ class Application {
         for (let key in this.#layouts) {
             this.#layoutIO.saveLayoutForDisplay(key, this.#layouts[key]);
         }
-        // save user presets
+        
         for (let i = 0; i < 4; i++) {
             this.#layoutIO.saveLayoutForPreset(i, this.#presets[i]);
         }
@@ -204,14 +201,13 @@ class Application {
     }
 
     #loadPresets() {
-        // load all user presets
+
         let userPresets = [];
         for (let i = 0; i < 4; i++) {
             const preset = this.#layoutIO.loadLayoutForPreset(i) || new LayoutNode(0);
             userPresets.push(preset);
         }
 
-        // load the system preset
         this.#presets = [
             ...userPresets,
             LayoutOf2x2.clone(),
@@ -254,7 +250,7 @@ class Application {
         }
     }
 
-    // read the layout from the configuration file, or set the default
+    
     #readOrCreateLayoutForDisplay(displayIdx, defaultLayout = LayoutOf2x2.clone()) {
         if (this.#layouts[displayIdx]) {
             return this.#layouts[displayIdx];
@@ -278,13 +274,11 @@ class Application {
     #onGrabBegin(window, op) {
         if (op !== Meta.GrabOp.MOVING || window.window_type !== Meta.WindowType.NORMAL) return;
 
-        // A grab-begin while a session is alive is our own restart landing.
         if (this.#dragSession) {
             this.#dragSession.onGrabRestart(window);
             return;
         }
 
-        // Fresh drag.
         this.#loadThemeColors();
         this.#dragSession = new DragSession({
             window,
@@ -297,7 +291,7 @@ class Application {
         if (!this.#dragSession) return;
         if (op !== Meta.GrabOp.MOVING || window.window_type !== Meta.WindowType.NORMAL) return;
 
-        if (this.#dragSession.tryRestart()) return;  // session continues
+        if (this.#dragSession.tryRestart()) return;  
 
         this.#dragSession.finish();
         this.#dragSession = null;

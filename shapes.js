@@ -1,13 +1,10 @@
-// helper utilities to build polygon paths used for drawing
 
-// quantize floating point coordinates so we can safely use them as map keys
 const COORD_PRECISION = 1e6;
 
 function toKeyCoord(value) {
     return Math.round(value * COORD_PRECISION);
 }
 
-// collect unique finite values while preserving numeric ordering
 function uniqueSorted(values) {
     const seen = new Set();
     const unique = [];
@@ -53,7 +50,6 @@ function polygonArea(points) {
     return area * 0.5;
 }
 
-// return the axis-aligned portion shared by both rectangles (if any)
 function computeIntersection(rect, excludedRect) {
     if (!rect || !excludedRect) return null;
 
@@ -72,7 +68,7 @@ function computeIntersection(rect, excludedRect) {
     };
 }
 
-// create a clockwise polygon for rect minus the overlapping part of excludedRect
+
 function buildDifferencePath(rect, excludedRect) {
     if (!rect) return [];
 
@@ -96,7 +92,7 @@ function buildDifferencePath(rect, excludedRect) {
         ];
     }
 
-    // slice the area into a minimal grid defined by unique X/Y breakpoints
+
     const xs = uniqueSorted([rectLeft, rectRight, intersection.x, intersection.x + intersection.width]);
     const ys = uniqueSorted([rectTop, rectBottom, intersection.y, intersection.y + intersection.height]);
 
@@ -118,7 +114,7 @@ function buildDifferencePath(rect, excludedRect) {
             const insideIntersection = cx >= intersection.x && cx <= intersection.x + intersection.width &&
                 cy >= intersection.y && cy <= intersection.y + intersection.height;
 
-            // retain cells that belong to rect but not the overlapped region
+            
             if (insideRect && !insideIntersection) {
                 cells.push({ x0, x1, y0, y1 });
             }
@@ -131,7 +127,7 @@ function buildDifferencePath(rect, excludedRect) {
 
     const edgeMap = new Map();
 
-    // add rectangle edges, removing pairs that are shared between adjacent cells
+
     function addEdge(x1, y1, x2, y2) {
         if (Math.abs(x1 - x2) < 1e-7 && Math.abs(y1 - y2) < 1e-7) {
             return;
@@ -160,7 +156,7 @@ function buildDifferencePath(rect, excludedRect) {
     }
 
     const edgesByStart = new Map();
-    // bucket edges by start vertex so we can follow connected boundary segments
+
     for (const edge of edges) {
         const startKey = pointKey(edge.start);
         if (!edgesByStart.has(startKey)) {
@@ -173,7 +169,7 @@ function buildDifferencePath(rect, excludedRect) {
     let bestLoop = null;
     let bestArea = -Infinity;
 
-    // walk every possible loop and keep the one with the largest area (outer boundary)
+
     for (const edge of edges) {
         const firstKey = orientedEdgeKey(edge);
         if (visited.has(firstKey)) continue;

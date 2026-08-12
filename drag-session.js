@@ -4,27 +4,14 @@ const Meta = imports.gi.Meta;
 
 const { WindowSnapper } = require('./window-snapper');
 
-// Safety cap against runaway restart loops.
+
 const MAX_RESTARTS = 100;
 
-/**
- * Owns all per-drag state and lifecycle for one MOVING grab on one window.
- *
- * Muffin terminates a MOVING grab on any secondary mouse button event
- * while LMB is held, and a Cinnamon extension cannot veto that from JS.
- * Workaround: on every grab-op-end we re-issue the MOVING grab on the
- * same window whenever LMB is still physically down, preserving the
- * grip point via explicit anchor coordinates. The effect is an
- * uninterrupted drag.
- *
- * Snapping can be enabled during the drag via a modifier key or
- * secondary mouse button; the overlay stays visible until the user
- * toggles it off or releases LMB to commit.
- */
+
 class DragSession {
     #window;
     #options;
-    #layoutFor;           // (monitorIdx) -> LayoutNode
+    #layoutFor;           
     #snappers = [];
 
     #cancelled = false;
@@ -53,13 +40,10 @@ class DragSession {
         this.#startActivationPoller();
     }
 
-    // A grab-begin fired while we're alive — that's our own restart landing.
     onGrabRestart(window) {
         this.#window = window;
     }
 
-    // Called on grab-op-end. Returns true if we've scheduled a restart
-    // (caller keeps the session alive); false if the drag is really over.
     tryRestart() {
         if (this.#cancelled) return false;
         if (this.#restarts >= MAX_RESTARTS) {
@@ -73,7 +57,7 @@ class DragSession {
         return true;
     }
 
-    // Commit the snap (or skip if cancelled) and release all resources.
+
     finish() {
         if (this.#pendingRestartId) {
             GLib.source_remove(this.#pendingRestartId);
@@ -89,7 +73,7 @@ class DragSession {
         this.#window = null;
     }
 
-    // ---------------- private ----------------
+
 
     #buildSnapper(monitorIdx) {
         const o = this.#options;
@@ -116,7 +100,7 @@ class DragSession {
     }
 
     #reissueGrab(anchorX, anchorY) {
-        // LMB may have been released during the idle race.
+
         const [, , state] = global.get_pointer();
         if (!(state & Clutter.ModifierType.BUTTON1_MASK) || !this.#window) {
             this.finish();
@@ -124,9 +108,7 @@ class DragSession {
         }
 
         try {
-            // Display-level begin_grab_op with explicit anchor coords
-            // preserves the grip point (the window-level API re-anchors
-            // at the window centre).
+            
             global.display.begin_grab_op(
                 this.#window,
                 Meta.GrabOp.MOVING,
@@ -145,17 +127,9 @@ class DragSession {
             return;
         }
 
-        // After a grab restart, run an onMotion pass on every snapper so
-        // the rising-edge toggle logic in SnappingOperation picks up the
-        // current button/modifier state and activates or deactivates as
-        // appropriate.
         for (const snapper of this.#snappers) snapper.refreshFromPointer();
     }
 
-    // Poll the pointer at ~60 Hz for the entire drag.  This catches
-    // activator state changes (modifier key or RMB press/release) that
-    // happen while the mouse is stationary and no position-changed event
-    // fires.  Needed both for initial activation AND for toggling off.
     #startActivationPoller() {
         this.#activationPollerId = GLib.timeout_add(GLib.PRIORITY_DEFAULT, 16, () => {
             for (const snapper of this.#snappers) snapper.refreshFromPointer();

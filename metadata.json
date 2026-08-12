@@ -2,12 +2,11 @@
     "cinnamon-version": [
         "6.2"
     ],
-    "uuid": "fancytiles@basgeertsema",
-    "name": "Fancy Tiles",
+    "uuid": "mintsnap@r3adk",
+    "name": "MintSnap",
     "description": "Snap your windows to a flexible layout",
-    "version": "1.1.0",
+    "version": "0.1.0",
     "multiversion": false,
-    "url": "https://github.com/basgeertsema/fancytiles",
-    "author": "Bas Geertsema",
-    "last-edited": 1751367688
+    "url": "https://github.com/KariMahfoudi/MintSnap.git",
+    "author": "Karim Mahfoudi"
 }

@@ -7,26 +7,19 @@ const St = imports.gi.St;
 const { drawLayout } = require('./drawing');
 const { getUsableScreenArea } = require('./window-utils');
 const { PreviewSplitOperation, ResizeOperation, MarginsOperation, PresetShortcutOperation } = require('./node_tree');
-
-// the grid editor presents the user with a visual way of
-// editing the layout tree. the user can resize layout regions (move dividers),
-// split regions, add margins, and load and save presets.
 class GridEditor {
-    // grid properties
+    
     #colors;
     #workArea;
     #presetTextColor;
 
-    // the layout tree to edit
     #layoutTree;
 
-    // the preset layouts. 0-3 are user presets, 4-7 are system presets
     #presets;
 
-    // focused display index
     #displayIdx;
 
-    // UI actors
+
     #modalBackground;
     #drawingArea;
     #infoDialog;
@@ -34,13 +27,12 @@ class GridEditor {
     #savePresetDialog;
     #presetAreas = [];
 
-    // the callback to call when the editor is closed
+
     #onClose;
 
-    // whether to show guide lines when splitting
+
     #showGuideLines;
 
-    // operations on the layout tree
     #marginsOperation;
     #previewOperation;
     #resizeOperation;
@@ -54,36 +46,31 @@ class GridEditor {
         this.#presets = presets;
         this.#showGuideLines = showGuideLines;
 
-        // get the working area to occupy as a grid editor   
-        // and resize the layout to fit the work area
+
         this.#workArea = getUsableScreenArea(this.#displayIdx);
         this.#layoutTree.calculateRects(this.#workArea.x, this.#workArea.y, this.#workArea.width, this.#workArea.height);
 
-        // create a modal background with the drawing area as only child
-        // the drawing area shows the layout tree visually
+
         this.#drawingArea = this.#createDrawingArea();
         this.#modalBackground = this.#createModalBackground(this.#workArea, this.#drawingArea);
         Main.pushModal(this.#modalBackground);
         Main.uiGroup.add_actor(this.#modalBackground);
 
-        // the info dialog shows the keyboard shortcuts
+
         this.#infoDialog = this.#createInfoDialog();
 
-        // the load preset dialog allows the user to load a preset
+
         this.#loadPresetDialog = this.#createLoadPresetDialog();
         this.#loadPresetDialog.hide();
         Main.uiGroup.add_actor(this.#loadPresetDialog);
 
-        // the save preset dialog allows the user to save a preset
         this.#savePresetDialog = this.#createSavePresetDialog();
         this.#savePresetDialog.hide();
         Main.uiGroup.add_actor(this.#savePresetDialog);
 
-        // get the themed color for the preset sequence number, that 
-        // should give enough contrast with the themed snapping regions
         this.#presetTextColor = this.#loadPresetDialog.get_theme_node().get_foreground_color();
 
-        // the operations to do when in the grid editor
+
         this.#previewOperation = new PreviewSplitOperation(this.#layoutTree, this.#workArea.width, this.#workArea.height, this.#showGuideLines);
         this.#resizeOperation = new ResizeOperation(this.#layoutTree, this.#workArea.width, this.#workArea.height);
         this.#marginsOperation = new MarginsOperation(this.#layoutTree);
@@ -114,7 +101,7 @@ class GridEditor {
             can_focus: true,
             style: 'background-color: rgba(0, 0, 0, 0.5);',
 
-            // modal behaviour with these properties
+
             track_hover: true,
             can_focus: true
         });
@@ -127,9 +114,7 @@ class GridEditor {
         background.set_child(child);
 
         background.connect('button-press-event', () => {
-            // TODO: connect to the parent here
-            // Close editor when clicking outside
-            //closeEditor();
+
             return Clutter.EVENT_STOP;
         });
 
@@ -137,7 +122,7 @@ class GridEditor {
     }
 
     #usePreset(layout) {
-        // clone the preset and 'revert' the layout to this clone
+
         const currentMargin = this.#layoutTree.isLeaf() ? 0 : this.#layoutTree.children[0].margin;
         this.#layoutTree.revert(layout.clone());
         this.#layoutTree.forSelfAndDescendants((node) => node.margin = currentMargin);
@@ -153,11 +138,11 @@ class GridEditor {
             vertical: true
         });
 
-        // ensure that the ratio of the previews are roughly the same as the work area
+    
         const ratio = this.#workArea.width / this.#workArea.height;
         const tileWidth = this.#workArea.width / 8;
         const tileHeight = tileWidth / ratio;
-        const titleHeight = 100; // roughly the height of the title
+        const titleHeight = 100; 
         const dialogWidth = tileWidth * 4;
         const dialogHeight = tileHeight * 2 + titleHeight;
 
@@ -171,7 +156,6 @@ class GridEditor {
             style_class: 'confirm-dialog-title'
         }));
 
-        // table with a 4x2 grid of drawing areas showing the preset
         let table = new St.Table({
             reactive: true,
             can_focus: true,
@@ -210,7 +194,7 @@ class GridEditor {
         const ratio = this.#workArea.width / this.#workArea.height;
         const tileWidth = this.#workArea.width / 8;
         const tileHeight = tileWidth / ratio;
-        const titleHeight = 100; // roughly the height of the title
+        const titleHeight = 100; 
         const dialogWidth = tileWidth * 4;
         const dialogHeight = tileHeight * 1 + titleHeight;
 
@@ -224,7 +208,7 @@ class GridEditor {
             style_class: 'confirm-dialog-title'
         }));
 
-        // table with a 4x1 grid of drawing areas showing the users presets to save
+      
         let table = new St.Table({
             reactive: true,
             can_focus: true,
@@ -259,12 +243,12 @@ class GridEditor {
 
 
     #createInfoDialog() {
-        // Calculate center position        
+           
         let dialogWidth = 600;
         let dialogHeight = 600;
 
-        let dialogX = this.#workArea.x + ((this.#workArea.width - dialogWidth) / 2);  // Center horizontally
-        let dialogY = this.#workArea.y + ((this.#workArea.height - dialogHeight) / 2); // Center vertically
+        let dialogX = this.#workArea.x + ((this.#workArea.width - dialogWidth) / 2);  
+        let dialogY = this.#workArea.y + ((this.#workArea.height - dialogHeight) / 2); 
 
         let dialog = new Dialog.Dialog(Main.uiGroup);
         dialog.set_position(dialogX, dialogY);
@@ -283,7 +267,7 @@ class GridEditor {
     }
 
     destroy() {
-        // Pop modal mode
+    
         Main.popModal(this.#modalBackground);
 
         // Remove from UI
@@ -299,16 +283,16 @@ class GridEditor {
         this.#infoDialog = null;
         this.#savePresetDialog = null;
 
-        // Clean up key bindings
+        
         this.#removeKeyBindings();
     }
 
     #setupKeyBindings() {
-        Main.keybindingManager.addHotKey('fancytiles-close', 'Escape', this.#onEscapePressed.bind(this));
+        Main.keybindingManager.addHotKey('MintSnap-close', 'Escape', this.#onEscapePressed.bind(this));
     }
 
     #removeKeyBindings() {
-        Main.keybindingManager.removeHotKey('fancytiles-close');
+        Main.keybindingManager.removeHotKey('MintSnap-close');
     }
 
     #onEscapePressed() {
@@ -319,18 +303,18 @@ class GridEditor {
         const cr = area.get_context();
         const tree = area.tree;
 
-        // Clear the drawing area (make it transparent)
+        
         cr.setOperator(Cairo.Operator.CLEAR);
         cr.paint();
         cr.setOperator(Cairo.Operator.OVER);
 
-        // Get the actor coordinates relative to its parent
+    
         const buttonMargins = 10;
         const [actorX, actorY] = area.get_transformed_position();
         const [width, height] = area.get_size();
         tree.calculateRects(actorX + buttonMargins, actorY + buttonMargins, width - 2 * buttonMargins, height - 2 * buttonMargins);
 
-        // Draw the layout
+    
         drawLayout(
             cr,
             tree,
@@ -351,18 +335,18 @@ class GridEditor {
     #onRepaint(area, tree) {
         let cr = area.get_context();
 
-        // Clear the drawing area (make it transparent)
+        
         cr.setOperator(Cairo.Operator.CLEAR);
         cr.paint();
         cr.setOperator(Cairo.Operator.OVER);
 
-        // Get the actor coordinates relative to its parent
+
         let [actorX, actorY] = area.get_transformed_position();
 
-        // Draw the layout
+    
         drawLayout(cr, tree, { x: actorX, y: actorY }, this.#colors);
 
-        // Draw split guide lines at 1/3, 1/2, and 2/3 of the region being split
+    
         const previewNode = tree.findNode(n => n.isPreview);
         if (this.#showGuideLines && previewNode && previewNode.parent) {
             const parentRect = previewNode.splitGuideRect || previewNode.parent.rect;

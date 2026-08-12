@@ -1,16 +1,11 @@
-// Fancy Tiles is a Cinnamon extension that allows you to snap windows
-// to regions in a very flexible layout. In particular, the layout does
-// not have to be a regular grid where horizontal and vertical splits are
-// always across the whole display.
+
 
 const { Application } = require('./application');
 
-const UUID = 'fancytiles@basgeertsema';
+const UUID = 'mintsnap@r3adk';
 let application = null;
 
-//
-// Cinnamon extensions lifecycle functions
-// 
+
 
 function init() {
 }
