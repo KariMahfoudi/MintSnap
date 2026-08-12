@@ -1,0 +1,65 @@
+{
+  "hotkey": {
+    "type": "keybinding",
+    "default": "<Super>g",
+    "description": "Global Hotkey to open the Fancy Tiles layout editor"
+  },
+  "enableSnappingModifiers": {
+    "type": "combobox",
+    "description": "Key modifier to toggle snapping",
+    "tooltip": "When set, pressing the key modifier while dragging (de)activates the snapping",
+    "default": "CTRL",
+    "options": {
+      "(none)": "",
+      "CTRL": "CTRL",
+      "ALT": "ALT",
+      "SUPER": "SUPER",
+      "SHIFT": "SHIFT"
+    }
+  },
+  "activateWithNonPrimaryButton": {
+    "type": "switch",
+    "description": "Toggle snapping with secondary mouse button",
+    "tooltip": "When enabled, pressing the secondary mouse button while dragging (de)activates the snapping",
+    "default": false
+  },
+  "autoStartSnapping": {
+    "type": "switch",
+    "description": "Automatically start snapping when dragging",
+    "tooltip": "When enabled, snapping activates immediately when a window drag begins. You can still toggle it off with the modifier key or secondary mouse button.",
+    "default": false
+  },
+  "enableMultiSnappingModifiers": {
+    "type": "combobox",
+    "description": "Key modifier to enable merging additional regions",
+    "tooltip": "When this key modifier is held down in snapping mode, all selected regions will be merged into a single region into which the window will snap",
+    "default": "ALT",
+    "options": {
+      "(disabled)": "",
+      "CTRL": "CTRL",
+      "ALT": "ALT",
+      "SUPER": "SUPER",
+      "SHIFT": "SHIFT"
+    }
+  },
+  "mergeAdjacentOnHover": {
+    "type": "switch",
+    "description": "Merge regions within the mouse radius",
+    "tooltip": "When enabled, all regions with a radius of the mouse cursor are merged into a single region into which the window will snap",
+    "default": true
+  },
+  "showGuideLines": {
+    "type": "switch",
+    "description": "Show guide lines in the grid editor",
+    "tooltip": "When enabled, guide lines at 1/3, 1/2 and 2/3 are shown in the grid editor when splitting a region",
+    "default": true
+  },
+  "mergingRadius": {
+    "type": "scale",
+    "description": "Radius around the mouse cursor used for merging",
+    "default": 15,
+    "min": 5,
+    "max": 150,
+    "step": 5
+  }
+}
